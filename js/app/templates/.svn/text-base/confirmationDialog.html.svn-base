@@ -1,0 +1,3 @@
+<div class="message">{{insertMessage()}}</div>
+<button class="btn cancel">Cancel</button>
+<button class="btn confirm">Ok</button>

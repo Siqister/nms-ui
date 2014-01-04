@@ -1,0 +1,149 @@
+/* Global styles */
+
+html, body, h1, h2, h3, a, p{
+	margin: 0;
+	padding: 0;
+	position: relative;
+}
+html, body, #app{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+#app{
+	color: #fff;
+	background: url('../assets/border-bottom.png') #000 no-repeat;
+	background-position: left bottom;
+	background-size: 100% auto;
+}
+
+/* 
+ * App Regions
+ */
+#app #conveyor{
+	height: 20%; /*216*/
+	top: 0;
+	background: #000;
+	position: relative;
+}
+#app #container{
+	height: 70%; /*810*/
+	width: 200%;
+}
+#app #container .pane{
+	height: 100%;
+	float: left;
+}
+#app #container #data-manager{
+	width: 1500px;
+	margin: 0 40px;
+}
+#app #container #viz-gallery{
+	width: 1500px;
+	margin: 0 40px 0 0;
+}
+#app #nav{
+	height: 10%;
+	padding: 20px;
+}
+
+/*
+ * Fonts
+ */
+body, h1, h2, h3, h4{
+	font-family: Helvetica, Arial, sans-serif;
+}
+body{
+	font-size: 0.8em;
+}
+h1{
+	font-size: 1.5em;
+}
+
+/* 
+ * Region: Conveyor
+ */
+#conveyor .conveyor-inner,
+#conveyor .conveyor-inner #webgl,
+#conveyor .conveyor-inner #dataset-list{
+	height: 100%;
+	width: 100%;
+}
+#conveyor #dataset-list{
+	position: absolute;
+	top: 0;
+}
+#conveyor #dataset-list li{
+	list-style: none;
+	width: 48px;
+	height: 48px;
+	float: left;
+	position: absolute;
+	left: -2000px;
+	top: 50%;
+	margin-top: -24px;
+	transition: margin 1s;
+	-webkit-transition: margin 1s;
+	-moz-transition: margin 1s;
+	background: url('../assets/icon_dataset_background.png') no-repeat center;
+	background-size: 100% auto;
+}
+#conveyor #dataset-list li.paused{
+	width: 56px;
+	height: 56px;
+	margin:top: -28px;
+}
+#conveyor #dataset-list li a{
+	width: 100%;
+	height: 100%;
+	display: block;
+	text-indent: -9999px;
+}
+#conveyor #dataset-list li .dataset-desc{
+	width: 300%;
+	margin: 10px 0 0 -100%;
+	padding: 5px;
+	background: #fc0;
+	opacity: 0;
+	transition: opacity 2s;
+	-webkit-transition: margin 2s;
+	-moz-transition: margin 2s;
+}
+#conveyor #dataset-list li.paused .dataset-desc{
+	opacity: 1;
+}
+
+/* 
+ * Region: Nav
+ */
+#nav .logo{
+	width: 340px;
+	height: 55px;
+	background: url('../assets/logo.png') no-repeat;
+	margin: auto;
+}
+
+/*
+ * Region: Data Manager
+ */
+#data-manager #workflow-container,
+#data-manager #workflow-container #operator-flow,
+#data-manager #workflow-container #workflow-inner{
+	height: 100%;
+}
+/* Background and appearance */
+#data-manager{
+	background: -webkit-linear-gradient(35deg, rgba(0,0,0,1), rgba(102,255,226,0.15));
+}
+/* Operation flow visualization */
+#data-manager #flow-canvas svg text{
+	fill: #fff;
+}
+#data-manager #flow-canvas svg circle{
+	stroke-width: 2.5px;
+	stroke: #fff;
+}
+#data-manager #flow-canvas svg g.operator-button-group line{
+	stroke: #ffcc00;
+}
+

@@ -1,0 +1,9 @@
+<div id="data-previews">
+    <div id="progress-bar-solo"></div>
+
+</div>
+
+
+<div id="modal-actions">
+    <button id="close-preview" class="btn">Close</button>
+</div>

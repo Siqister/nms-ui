@@ -1,0 +1,5 @@
+<a class="operator-item {{disabledStatus()}}" id="operator-item-{{opId}}">
+<h4>{{ operatorName }}</h4>
+<p>{{description}}</p>
+<ul id="parameter-items"></ul>
+</a>

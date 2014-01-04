@@ -1,0 +1,3 @@
+<h4 class="preview-header">{{getTitle()}} <span class="preview-node-id">{{getId()}}</span></h4>
+<table></table>
+<!--  -->

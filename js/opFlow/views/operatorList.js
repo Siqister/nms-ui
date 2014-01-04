@@ -1,0 +1,204 @@
+// operator list
+define([
+    'underscoreM',
+    'marionette',
+    'templates',
+    //'opConfig/views/operatorItemDetail',
+    'vent',
+    'config' ,
+    'jquery-ui-autocomplete',
+    'jquery-menu-aim'
+], function(
+    _,
+    Marionette,
+    templates,
+    OperatorItemDetailView,
+    vent,
+    config
+) {
+
+    var OperatorList = {};
+
+    var OperatorItemView = Marionette.ItemView.extend({
+        //template : _.template(templates.operatorListItem),
+        tagName : 'li',
+        templateHelpers: {
+            disabledStatus: function() {
+                if (this.disabled) {
+                    return "operator-disabled"
+                }
+            }
+        }
+    });
+
+    var OperatorListView = Marionette.ItemView.extend({
+        getTemplate: function() {
+            if (this.options.nodeSelection) {
+                if(this.options.nodeSelection[0].get("type") == "dataset") {
+                    return _.template(templates.datasetMenu);
+                } else {
+                    return _.template(templates.operatorMenu);
+                }
+            } else {
+                return _.template(templates.operatorMenu)
+            }
+        },
+
+
+        id : 'actions-menu',
+
+        initialize : function() {
+            var self = this;
+            _.bindAll(this, 'showMessage');
+
+            vent.on('apply:selection', function(collection) {
+                self.options.nodeSelection = collection;
+                //render to regen template
+                self.render()
+            });
+        },
+
+        onDomRefresh: function() {
+            this.renderList();
+        } ,
+
+        renderList : function() {
+            var self = this;
+            var dataList = [];
+            //rendered as raw system operators
+            this.collection.forEach(function(model) {
+
+                var blacklist = ["AREA_GROUPING", "SORT", "JOIN"]
+                if (_.contains(blacklist,model.get("opId"))){
+                    model.set("disabled", true);
+                }
+
+                // disable certain operators
+
+
+                dataList.push({
+                    label : model.get('operatorName'),
+                    data : model
+                });
+
+            });
+            
+            //sort dataList
+            dataList = _.sortBy( dataList, function(operator){ return operator.label; });
+
+            this.ui.input.autocomplete({
+                    source : dataList,
+                    appendTo : this.ui.list,
+                    minLength : 0,
+                    select : function(event, ui) {
+                    //trigger event as raw system operators + relevant dataset
+                        if (!ui.item.data.get("disabled")) {
+                            vent.trigger('show:operatorLayout', "add", ui.item.data, self.options.nodeSelection);
+                        }
+
+                    },
+                    close: function(){
+                        self.ui.list.hide();
+                }})
+
+                .data("ui-autocomplete")._renderItem = function(ul, item) {
+                    var operatorItemView = new OperatorItemView({
+                        model : item.data
+                    });
+                    operatorItemView.render();
+
+
+                    return operatorItemView.$el.appendTo(ul);
+                };
+
+              //todo: menu hover instead of click with menuAim plugin
+//            $('#'+this.id + ' .dropdown-menu').menuAim({
+//                //submenuSelector: this.ui.list,
+//                activate: function(a){
+//                    console.log('ok',a)
+//                    var idx = $(a).index();
+//                    $(a).find(self.ui.list).show();
+//                },  // fired on row activation
+//                deactivate: function(a){
+//                    var idx = $(a).index();
+//                    self.ui.list.hide();
+//
+//                }  // fired on row deactivation
+//            });
+
+            this.ui.input.click(function(e) {
+                e.stopPropagation();
+            })
+
+
+            this.ui.inputEl.click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                self.ui.list.show();
+                self.ui.input.autocomplete("search", "");
+                self.ui.input.focus();
+
+            });
+
+            this.ui.removeNode.click(function() {
+                console.log($(this), $(this).hasClass('terminal'))
+//                if ($(this).hasClass("terminal")) {
+                    vent.trigger('remove:node', self.options.nodeSelection[0])
+//                }
+            })
+
+            this.ui.editNode.click(function() {
+                var currNode = self.options.nodeSelection[0];
+                //pull the collection out from the storage within node selection
+                //todo: it may be better to store this reprsentation in a public workflow collection
+                //todo: make this work for arrays of inputs
+                //this accounts for the case of prececessorIDs being datasets instead
+                if (currNode.get("predecessorID").length) {
+                    var prevID =  currNode.get("predecessorID")[0];
+                } else if (currNode.get("dataset").length) {
+                    var prevID =  currNode.get("dataset")[0];
+                }
+
+
+
+                var currNodeCollection = currNode.collection.filter(function(d){return d.get("uniqueID") == prevID})
+                vent.trigger('show:operatorLayout', "edit", currNode, currNodeCollection);
+            })
+
+            this.ui.tablePreview.click(function() {
+                var currNode = self.options.nodeSelection[0];
+                vent.trigger('show:previewLayout', currNode);
+            });
+
+
+
+        },
+
+        ui : {
+            list : '#operator-list',
+            input : '#autocomplete',
+            inputEl : '.add-operator-item',
+            tablePreview: '#table-preview',
+            removeNode: '#remove-node',
+            editNode: '#edit-node'
+        },
+
+        showMessage : function(message) {
+            this.ui.list.html(message);
+        }
+    });
+
+    // public api
+    OperatorList.showOperatorItems = function(collection) {
+        var operatorListView = new OperatorListView({
+            collection : collection
+        });
+        // return operatorListView;
+        vent.trigger('show:operatorItems', operatorListView);
+    };
+
+
+
+    return OperatorList;
+
+});

@@ -1,0 +1,16 @@
+
+    <div class="navbar-inner">
+        <a id="logo" href="#"><img src="/images/logo-dba.png"></a>
+        <div class="nav-collapse collapse">
+            <ul class="nav">
+                <li id="nav-data-manager"><a >DATA</a></li>
+                <li id="nav-opFlow"><a >OPERATIONS</a></li>
+                <li id="nav-viz"><a >VIZ</a></li>
+            </ul>
+            <ul class="nav pull-right">
+                <li  id="nav-acct"><a>WORKFLOWS</a></li>
+                <li id="help" class="dropdown"><a data-toggle="dropdown" href="#">HELP</a></li>
+            </ul>
+
+        </div>
+    </div>

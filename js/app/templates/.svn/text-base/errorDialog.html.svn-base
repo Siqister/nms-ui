@@ -1,0 +1,2 @@
+<div class="message">{{insertMessage()}}</div>
+<button class="btn confirm">Ok</button>

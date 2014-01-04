@@ -1,0 +1,98 @@
+// operator list item: on click show an operator dialog
+define(['underscoreM', 'marionette','templates', 'vent'], function(_, Marionette, templates, vent) {
+    
+    // private module level var
+    return Marionette.ItemView.extend({
+            template: _.template(templates.progressBar),
+            initialize: function(){
+                     _.bindAll(this, "updateBar", "showStatus");
+                    var self = this;
+
+            },
+            templateHelpers:{
+                getQueueNumber: function() {
+                    if (!_.isUndefined(this.queueNumber)) {
+                        return parseInt(this.queueNumber+1).ordinate();
+                    }
+
+                }
+
+            },
+            onDomRefresh: function(){
+                    var self = this;
+                console.log(self)
+                    vent.on("progress:update:"+self.options.exeType, function(progress) {
+
+                            self.$el.find('.preview-status').hide();
+
+                            if (_.has(progress, "err")) {
+                                console.log("ERR", progress)
+                                vent.trigger("app.show.message", {}, progress)
+                            }
+                            else if (_.has(progress, "done")) {
+                                self.$el.find('.progress')
+                                        .removeClass("active")
+                                        .find('.bar')
+                                        .remove();
+
+                                //$('#status').delay(1500).animate({opacity:0}, 500);
+                            } else if (_.has(progress, "state") && progress.state == "scheduled" ) {
+                                console.log(progress)
+                                self.$el.find('.preview-status').show();
+                                self.model.set("queueNumber", progress.queueNumber);
+
+                                self.render();
+                            } else {
+                                self.updateBar(progress)
+                            }
+                        //                        if (progress.operatorInstanceId == self.model.get("uniqueID")) {
+
+                    });
+
+             },
+
+            updateBar: function(progress, isLast) {
+
+                    var $bar = this.$el.find('.progress');
+                    var total = 100 /progress.numberOfOperators;
+
+                    if (this.options.progressType == "allButFinal") {
+                        total = 100 / (progress.numberOfOperators - 1);
+                    }
+
+                    var mapStatus = progress.mapStatus;
+                    var reduceStatus = progress.reduceStatus;
+                    var widthFromProcessingStatus = ((total*0.5*mapStatus) + (total*0.5*reduceStatus)) + '%';
+
+                    console.log(progress, total, mapStatus, reduceStatus, widthFromProcessingStatus);
+
+                    var id = 'progress-'+progress.operatorInstanceId;
+
+                    if ($bar.find('.'+id).length === 0) {
+                        $bar.append($('<div/>', {
+                            id: id,
+                            class: 'bar bar-success '+id,
+                            css: {width: widthFromProcessingStatus}
+                        }));
+                    } else {
+                        $bar.find('.'+id).css({width: widthFromProcessingStatus});
+                    }
+
+                    $bar.addClass("active");
+
+
+
+                //this.showStatus("processing:" + progress.operatorName);
+
+            },
+
+            showStatus: function(status) {
+                //$("#status").html(status)
+            }
+        });
+
+        // ProgressBar.updateProgressBar = function(collection) {
+        //     var progressBarView = new ProgressBarView();
+        // };
+
+});

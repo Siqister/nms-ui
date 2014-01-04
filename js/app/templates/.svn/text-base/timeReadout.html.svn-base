@@ -1,0 +1,2 @@
+<span class="time-readout-time">{{startTime}} to {{endTime}}</span>
+<span class="warning">Workflow time range has been changed:  <a href="#" class="btn tiny" id="commit" title="WARNING: If you've already applied data operators, committing a new workflow time range will nullify these operators.">Commit</a><a href="#" class="btn tiny" id="revert">Revert</a></span>

@@ -1,0 +1,13 @@
+
+
+<h3>Welcome to Data Browser alpha</h3>
+
+<p>This is pre-release software. Expect bugs and usability issues.
+You can help development by reporting issues. See the help menu.</p>
+
+<p>Please watch our screencast to get started</p>
+
+<iframe width="640" height="480" src="//www.youtube.com/embed/G3QrhdfLCO8" frameborder="0" allowfullscreen></iframe>
+
+
+<p><button id="get-started" class="btn btn-xlarge">Get Started</button></p>

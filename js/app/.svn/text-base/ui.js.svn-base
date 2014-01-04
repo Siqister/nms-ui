@@ -1,0 +1,230 @@
+define(['jquery', 'vent'], function($, vent) {
+
+    //these should not be hardcoded
+    var fieldListWidth = 250;
+    var fieldTargetWidth = 250;
+
+    var navHeight = 70 //$('.navbar-inner').height();
+    var viewportHeight = function() {return $('#app').height() - navHeight};
+
+    var $vertFlow = $('#containers')
+
+    var $vertUpper = $('#container-upper');
+    var $upperPanes = $vertUpper.find('.pane')
+
+    var $horzFlow = $('#container-canvas');
+    var $horzPanes = $horzFlow.find('.pane');
+    var $modal = $('.modal');
+    var $timeReadout = $('#time-readout');
+
+    var $vizBuilder = $('#viz-builder');
+    var $vizConfigContainer = $('#viz-config-container')
+
+    var waitForFinalEvent = (function () {
+        var timers = {};
+        return function (callback, ms, uid) {
+            if (!uid) {
+                uid = "Don't call this twice without a uid";
+            }
+            if (timers[uid]) {
+                clearTimeout (timers[uid]);
+            }
+            timers[uid] = setTimeout(callback, ms);
+        };
+    })();
+
+    var ui =  {
+
+        calc: function() {
+            var width = $('body').width();
+
+            $horzPanes
+                    .css({
+                        width: width - fieldListWidth
+                    });
+
+            $upperPanes
+                    .css({
+                        width: width
+                    })
+
+            $vizBuilder
+                    .css({
+                        width: width
+                    })
+
+
+            $horzFlow
+                    .css({
+                        width: width * ($horzPanes.length + 1),
+                        height: viewportHeight()
+                    });
+
+
+            $vertUpper.css({
+                top: -1 * viewportHeight(),
+                height: viewportHeight(),
+                width: width
+            })
+
+        },
+        modal: function(el) {
+            var $modal = $('.modal');
+
+            var $dataPreviews = $('#data-previews');
+            var $dataPreviewOuter =  $('.preview-body')
+            var $dataPreviewInner = $('.preview-body-inner');
+
+            var actionsHeight = 75; //$('#modal-actions').height();
+
+            $dataPreviews.css({
+                height: $modal.outerHeight() - actionsHeight //- parseInt($modal.css('padding-top')) - parseInt($modal.css('padding-bottom'))
+            });
+
+            // applies to each preview pane (including joins)
+            $dataPreviewInner.each(function(){
+                var dataPreviewHeight;
+                var headerHeight = $(this).find('.preview-header').outerHeight(true);
+                var tableHeaderHeight = $(this).find('.dataTables_scrollHead').outerHeight(true);
+                var $tbody = $(this).find('.dataTables_scrollBody');
+
+
+                if ($dataPreviewOuter.length <= 1) {
+                   dataPreviewHeight = $dataPreviews.height();
+                } else {
+                   dataPreviewHeight = $dataPreviews.height()/2; // 2 corresponds to before+after
+                }
+
+                var progressHeight = $(this).find('.progress-container').outerHeight(true);
+                var timelinePaneHeight = $('#timeline-pane').outerHeight(true)/2; // 2 corresponds to before+after
+                $tbody.css({
+                    height: dataPreviewHeight - timelinePaneHeight - headerHeight - tableHeaderHeight - progressHeight
+                })
+            })
+
+        },
+        pos: {
+            init: function() {
+                var currPos = 'acct';
+                $vertFlow.css({
+                    top: viewportHeight() + navHeight
+                });
+                this.status = currPos;
+            },
+            data: function(){
+                var currPos = 'data';
+
+                $vertFlow.animate({
+                    top: navHeight
+                });
+
+                $horzFlow.animate({
+                    left: 0
+                });
+                $timeReadout.animate({
+                	left: 240
+                });
+                this.status = currPos;
+            },
+            opFlow: function() {
+                var currPos = 'opFlow';
+
+                $vertFlow.animate({
+                    top: navHeight
+                });
+
+                $horzFlow.animate({
+                    left: -1 * $horzPanes.eq(0).width()
+                });
+                $timeReadout.animate({
+                	left: $horzPanes.eq(0).width() + 20
+                });
+                this.status = currPos;
+            },
+            viz: function() {
+                var currPos = 'viz';
+
+                $vertFlow.animate({
+                    top: navHeight
+                });
+
+                $horzFlow.animate({
+                    left: -1 * ($horzPanes.eq(0).width() + $horzPanes.eq(1).width())
+                });
+                this.status = currPos;
+            },
+            acct: function() {
+                var currPos = 'acct';
+
+                $vertFlow.animate({
+                    top: viewportHeight() + navHeight
+                });
+
+                this.status = currPos
+            },
+            refresh: function() {
+                this[this.status]();
+            },
+            status: false
+
+        },
+        vizBuilderCalc: function() {
+            var $vizModule = $('#viz-module');
+            var width = $('body').width();
+            //this needs to be calculated after the module loads
+//            $vizModule
+//                    .css({
+//                        width: width - fieldListWidth - fieldTargetWidth
+//                    })
+        }
+
+    }
+
+    vent.on('app:modal:rendered', function(el) {
+        ui.modal(el);
+
+        $(window).resize(function(){
+            ui.modal(el);
+        })
+    })
+
+
+    vent.on('app:pos:init', function() {
+        ui.pos.init();
+        vent.trigger("nav:activate", "nav-acct")
+    });
+
+    vent.on('app:pos:opFlow', function() {
+        ui.pos.opFlow();
+        vent.trigger("nav:activate", "nav-opFlow")
+    });
+
+    vent.on('app:pos:data', function() {
+        ui.pos.data();
+        vent.trigger("nav:activate", "nav-data-manager")
+    });
+
+    vent.on('app:pos:viz', function() {
+        ui.pos.viz();
+        vent.trigger("nav:activate", "nav-viz")
+    });
+
+    vent.on('app:pos:acct', function() {
+        ui.pos.acct();
+        vent.trigger("nav:activate", "nav-acct")
+    });
+
+
+    //init calc
+    ui.calc();
+
+    $(window).resize(function () {
+        ui.calc();
+        ui.vizBuilderCalc();
+        waitForFinalEvent(function(){
+            ui.pos.refresh();
+        }, 500, "some unique string");
+    });
+
+    return ui;
+});

@@ -1,0 +1,72 @@
+// timeReadout
+// an app-level module that displays current workflow range
+// and allows the user to either commit new workflow time range or revert to the previous one
+define(['underscoreM', 'marionette','templates',  'vent', 'config'], function(_, Marionette, templates, vent, config) {
+	
+    var timeReadoutView = Marionette.ItemView.extend({
+    	//model: config.workflow
+    	id: "container",
+        template: _.template(templates.timeReadout),
+        initialize: function() {
+			_.bindAll(this, "uncommit", "committed");
+			
+           var self = this;
+           var time = this.model.get("workflowRangeRepresentation");
+           var format = d3.time.format("%a, %b %e %Y, %I:%M%p");
+
+           if (time.get("startTime")) {
+               this.model.set("startTime",format(time.get("startTime")))
+               this.model.set("endTime",format(time.get("endTime")))
+           } else {
+               this.model.set("startTime",'')
+               this.model.set("endTime",'')
+           }
+
+			this.model.get("timeAggregationRepresentation").on("change", function(){
+               self.model.set("startTime", format(time.get("startTime")))
+               self.model.set("endTime", format(time.get("endTime")))
+               self.render();
+            });
+            
+			this.model.get("workflowRangeRepresentation").on("change", function(){
+               self.model.set("startTime", format(time.get("startTime")))
+               self.model.set("endTime", format(time.get("endTime")))
+               self.render();
+            });
+            
+            //triggered by brush change in the data manager timeline
+            vent.on("timeReadout:uncommit", self.uncommit);
+            
+            //triggered by successful update of the workflow range
+            vent.on("workflow:setWorkflowRange:success", self.committed);
+        },
+        events: {
+        	"click #commit" : "commit",
+        	"click #revert" : "revert"
+        },
+        onRender: function(){
+        	this.$('#commit').tooltip({
+        		placement: "bottom",
+        		animation: false,
+        	});
+        },
+        uncommit: function(){
+        	this.$el.addClass("uncommitted");
+        },
+        commit: function(e){
+        	e.preventDefault();
+        	vent.trigger("workflow:setWorkflowRange");
+        	this.$el.find('.tooltip').remove();
+        },
+        committed: function(){
+        	this.$el.removeClass("uncommitted");
+        },
+        revert: function(e){
+        	e.preventDefault();
+        	vent.trigger("workflow:revertWorkflowRange"); //revert data manager timeline to previously committed workflow range
+        }
+    });
+
+    return timeReadoutView;
+
+});

@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/svn/rainbow/!svn/ver/1126/UserInterface/trunk/app/dev/js/app/views
+END
+nav.js
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/rainbow/!svn/ver/1107/UserInterface/trunk/app/dev/js/app/views/nav.js
+END
+progressBar.js
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/rainbow/!svn/ver/1097/UserInterface/trunk/app/dev/js/app/views/progressBar.js
+END
+dataPreview.js
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/rainbow/!svn/ver/1114/UserInterface/trunk/app/dev/js/app/views/dataPreview.js
+END
+dialogs.js
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/rainbow/!svn/ver/1108/UserInterface/trunk/app/dev/js/app/views/dialogs.js
+END
+timeReadout.js
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/rainbow/!svn/ver/1126/UserInterface/trunk/app/dev/js/app/views/timeReadout.js
+END

@@ -1,0 +1,4 @@
+<div class="progress-container">
+    <div class="preview-status"><span class="pull-left loader"></span> You are <span class="queue-number">{{getQueueNumber()}}</span> in line for data processing. Progress will begin shortly</div>
+    <div class="progress"></div>
+</div>

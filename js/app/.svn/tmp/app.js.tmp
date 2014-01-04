@@ -1,0 +1,204 @@
+<<<<<<< .mine
+define([ 'backbone', 'underscoreM', 'marionette', 'vent', 'ui', 'app/views/nav', 'app/views/timeReadout', 'app/views/dialogs', 'bootstrap-modal', 'bootstrap-tooltip' ], function(Backbone, _,
+        Marionette, vent, ui, NavView, timeReadoutView, dialogs) {
+=======
+define([ 'backbone', 'underscoreM', 'marionette', 'vent', 'ui', 'app/views/nav', 'app/views/dialogs', 'bootstrap-modal', 'bootstrap-tooltip', 'jquery-deparam' ], function(Backbone, _,
+        Marionette, vent, ui, NavView, dialogs) {
+>>>>>>> .r1118
+
+    var app = new Marionette.Application();
+
+    // modalregion: shows a view in bootstrap modal
+    var ModalRegion = Marionette.Region.extend({
+
+        onShow : function(view) {
+            view.on("close", this.hideModal, this);
+            this.$el.modal({
+                show : true,
+                keyboard : true
+            });
+        },
+
+        hideModal : function() {
+            this.$el.modal('hide'); // bootstrap modal
+        }
+    });
+
+
+    // these regions correspond to #ID's in the index.html
+    app.addRegions({
+        nav: '#nav',
+        dataManager: '#data-manager',
+        operationFlow : "#operation-flow",
+        vizBuilder: "#viz-builder",
+        accountManager: '#acct-manager',
+        timeReadout: "#time-readout",
+        modal : {
+            selector : '#modal',
+            regionType : ModalRegion
+        },
+        modalMessage : {
+            selector : '#modal-message',
+            regionType : ModalRegion
+        },
+        modalStartup : {
+            selector : '#modal-startup',
+            regionType : ModalRegion
+        }
+    });
+
+    // marionette app events...
+    app.on("initialize:after", function() {
+
+        //to debug or not debug
+        var urlParams = $.deparam(window.location.search.substring(1));
+
+        if (_.isUndefined(urlParams.debug)) {
+            //add dom class
+            $('#app').addClass("app-live");
+
+            //disable console logging
+            if (console) {
+                console.log = function(){};
+            }
+        } else {
+            $('#app').addClass("app-debug");
+        }
+
+        if (_.isUndefined(urlParams.nosplash)) {
+            //show splash
+            vent.trigger("app.show.startup");
+        }
+
+        Backbone.history.start({pushState:true});
+        console.log('initialize:after');
+
+    });
+
+    // pass in router/controller via options
+    // HIGH LEVEL INIT
+    app.addInitializer(function(options) {
+        // configure for loading templates stored externally...
+        Backbone.Marionette.TemplateCache.prototype.loadTemplate = function(templateId) {
+            // Marionette expects "templateId" to be the ID of a
+            // DOM element.
+            // But with RequireJS, templateId is actually the
+            // full text of the template.
+            var template = templateId;
+
+            // Make sure we have a template before trying to
+            // compile it
+            if (!template || template.length === 0) {
+                var msg = "Could not find template: '" + templateId + "'";
+                var err = new Error(msg);
+                err.name = "NoTemplateError";
+                throw err;
+            }
+
+            return template;
+        };
+
+        // init controller routers
+        new options.opFlowController.Router({
+            controller : options.opFlowController
+        });
+
+        new options.accountManagerController.Router({
+            controller : options.accountManagerController
+        });
+
+        //Render operator flow regardless of routers
+        //options.opFlowController.renderOperatorFlow();
+
+        //Render acctManager controllers regardless of routers
+        // these both need the username
+
+        //in case this hasnt been loaded
+        //fixme: this is not good policy when it comes to closing views
+//        vent.on('app:pos:acct', function() {
+//            options.accountManagerController.loadManager();
+//        })
+
+        //load the nav
+        vent.trigger('app:show:nav', new NavView());
+        
+        //attach all ajax errors to a model message
+        $(document).ajaxError( function(e, xhr, options){
+            //todo: handle custom responses from server
+            if (xhr.responseJSON) {
+                vent.trigger('app.show.error', xhr.responseJSON);
+            } else {
+                vent.trigger('app.show.error', xhr);
+            }
+
+        });
+
+    });
+
+
+
+
+    // app modal inter app/module communications
+    vent.on('app.show.modal', function(view) {
+        app.modal.show(view);
+    });
+
+    vent.on('app.close.modal', function() {
+        app.modal.close();
+    });
+
+    vent.on('app.show.message', function(model, message, trigger) {
+        app.modalMessage.show(new dialogs.confirmation({model:model, message:message, commitTrigger: trigger}));
+    });
+
+    vent.on('app.close.message', function() {
+        app.modalMessage.close();
+    });
+
+    vent.on('app.show.error', function(response) {
+        app.modalMessage.show(new dialogs.error({response:response}));
+    });
+
+    vent.on('app.show.startup', function() {
+        app.modalStartup.show(new dialogs.startup());
+    });
+
+    vent.on('app.close.startup', function() {
+        app.modalStartup.close();
+    });
+
+
+    vent.on('app.close.error', function() {
+        app.modalMessage.close();
+    });
+
+    vent.on('app:show:nav', function(appView) {
+        app.nav.show(appView);
+    });
+
+    // show an app view: both library and 'opFlowController' trigger this
+    vent.on('app:show:operatorFlow', function(appView) {
+        app.operationFlow.show(appView);
+    });
+
+    vent.on('app:show:dataManager', function(appView) {
+        app.dataManager.show(appView);
+    });
+
+    vent.on('app:show:vizBuilder', function(appView) {
+        app.vizBuilder.show(appView);
+    });
+
+    vent.on('app:show:accountManager', function(appView) {
+        app.accountManager.show(appView);
+    });
+    
+    //Siqi
+    //triggered when config.workflow becomes available
+    vent.on('app:show:timeReadout', function(model){
+    	app.timeReadout.show( new timeReadoutView({model:model}) );
+    });
+    
+    // export the app
+    return app;
+});

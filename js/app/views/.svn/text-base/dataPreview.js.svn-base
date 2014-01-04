@@ -1,0 +1,196 @@
+// operator list
+define(['underscoreM', 'marionette', 'templates',  'vent', 'app/views/progressBar',  'config', 'dataTables'], function(_, Marionette, templates, vent, ProgressBarView, config) {
+
+    var DataPreview = {};
+
+//    var LoadingView = Marionette.ItemView.extend({
+//        template: _.template(templates.loader),
+//        initialize: function() {
+//        }
+//
+//    });
+
+
+    var PreviewLayout =  Marionette.ItemView.extend({
+            template: _.template(templates.dataPreview),
+            className: "preview-body-inner",
+            //emptyView: LoadingView,
+            initialize: function() {
+
+                var self = this;
+                _.bindAll(this, "renderData");
+                this.$el.addClass('loader');
+
+                if (this.options.split) {
+                    $('.preview-body').each(function(){
+                        $(this).addClass("split")
+                    })
+                }
+
+                $("#close-preview").click(function() {
+                    vent.trigger("app.close.modal")
+                })
+
+
+            },
+            onDomRefresh :function() {
+                this.renderData()
+            },
+
+            templateHelpers: {
+                getTitle: function(type) {
+                    var title = this.datasetName || this.operatorName || this.name;
+                    return title;
+                },
+                getId: function() {
+                    //datasets will use id
+                    var id = this.id || this.uniqueID;
+                    return "id " + id;
+                }
+            },
+
+            collectionEvents: {
+              //  sync: "renderData",
+              //  all: "eventReadout"
+            },
+            eventReadout: function(event) {
+                console.log('ok', event);
+            },
+
+            renderData: function() {
+                var self = this;
+                this.$el.removeClass('loader')
+
+                //map schema to data
+                var data = this.collection.models;
+                var schema = this.options.schema.get('schema');
+
+                if (!_.isEmpty(data)) {
+                    if (!_.isUndefined((schema))) {
+                        var columns = _.map(_.keys(data[0].attributes), function(k,i) {
+                            var schemaItem = _.findWhere(self.options.schema.get('schema'), {dataId: k});
+                            if (schemaItem) {
+                                return {sTitle:schemaItem.name};
+                            }
+                        });
+                    } else {
+                        var columns = _.map(_.keys(data[0].attributes), function(k,i) { return {sTitle:k}});
+                    }
+                    var rows = _.map(data, function(obj) {return _.values(obj.attributes);});
+
+                    var $table = this.$el.find('table');
+
+                    if ($.fn.dataTable.fnIsDataTable($table[0])) {
+                        $table.dataTable().fnDestroy();
+                        $table.empty();
+                    }
+
+                    $table.dataTable( {
+                        "sScrollX": "100%",
+                        "aaData": rows,
+                        "aoColumns": columns,
+                        //"bDestroy": true,
+                        "bPaginate": false,
+                        "bLengthChange": false,
+                        "bFilter": false,
+                        "bSort": false,
+                        "bInfo": false,
+                        "bAutoWidth": false
+                    });
+                    
+                    // add click event to columnHeaders
+
+
+                    var $columnHeaders = $(".dataTables_scrollHeadInner th.sorting_disabled");
+                    $columnHeaders.unbind('click');
+                    $columnHeaders.bind('click', function () {
+                        var index = $(this).index()+1;
+                        // console.log( $(this).text() );
+
+//                        $(this).toggleClass('column-select')
+//                        $tableBody.find("td:nth-child("+index+")").toggleClass("column-select");
+
+                        vent.trigger("show:dataPreview:columnHeader:click", this);
+                    });
+
+
+
+
+                    $columnHeaders.each(function(){
+                        var $tableBody = $(this).closest(".dataTables_scrollHead").next(".dataTables_scrollBody").find("tbody")
+                        $(this).mouseover(function(){
+                            var index = $(this).index()+1;
+                           $tableBody.find("td:nth-child("+index+")").addClass("column-hover")
+                        })
+                        $(this).mouseout(function(){
+                            var index = $(this).index()+1;
+                            $tableBody.find("td:nth-child("+index+")").removeClass("column-hover")
+                        })
+                    });
+
+                } else {
+                    this.$el.html(config.messages.noData)
+                }
+                vent.trigger("app:modal:rendered", this.$el)
+
+
+            }
+    });
+
+    DataPreview.renderPreview = function(model, collection, schema) {
+//        console.log(model, collection, schema)
+        var detailView = new PreviewLayout({
+            model: model,
+            collection : collection,
+            schema: schema
+        });
+
+        vent.trigger('show:dataPreview', detailView);
+    }
+
+    DataPreview.dataPreviewBefore = function(model, collection, schema) {
+        var detailView = new PreviewLayout({
+            model: model,
+            collection : collection,
+            schema: schema
+        });
+        vent.trigger('show:dataPreviewBefore', detailView);
+    }
+
+    DataPreview.dataPreviewAfter = function(model, collection, schema) {
+        var detailView = new PreviewLayout({
+            model: model,
+            collection : collection,
+            schema: schema
+        });
+        vent.trigger('show:dataPreviewAfter', detailView);
+    }
+
+    DataPreview.dataPreviewBeforeJoin = function(model, collection, schema) {
+        var detailView = new PreviewLayout({
+            model: model,
+            collection : collection,
+            schema: schema,
+            split: true
+        });
+        vent.trigger('show:dataPreviewBeforeJoin', detailView);
+    }
+
+    DataPreview.progressBarBefore = function (options) {
+        var progressBarView = new ProgressBarView(options);
+        vent.trigger('show:operatorProgressBarBefore', progressBarView);
+    };
+
+    DataPreview.progressBarSolo = function (options) {
+        var progressBarView = new ProgressBarView(options);
+        vent.trigger('show:operatorProgressBarSolo', progressBarView);
+    };
+
+    DataPreview.progressBarAfter = function (options) {
+        var progressBarView = new ProgressBarView(options);
+        vent.trigger('show:operatorProgressBarAfter', progressBarView);
+    };
+
+    return DataPreview;
+
+});

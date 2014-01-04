@@ -1,0 +1,103 @@
+// operator list
+define(['underscoreM', 'marionette','templates',  'vent', 'config'], function(_, Marionette, templates, vent, config) {
+
+	//Values to populate the help menu with
+	var helpMenuCollection = new Backbone.Collection([
+		{
+			id: "0",
+			name: "FAQ",
+			dest: "http://www.google.com"
+		},{
+			id: "1",
+			name: "Bug Report",
+			dest: "https://docs.google.com/forms/d/1wSc1LqgI6uHXMQrF4S3-vu_IconfqUeoEfWEaLfWyrE/viewform?entry.458071141&entry.1139320128&entry.30726798&entry.1989524994&entry.76398699"
+		}]);
+	var HelpMenuItemView = Marionette.ItemView.extend({
+		tagName: 'li',
+		className: function(){
+			if(this.model.get("name")=="FAQ"){
+				return "disabled";
+			}
+		},
+		template: _.template("<a href='{{dest}}'>{{name}}</a>"),
+		initialize: function(){
+			this.listenTo(this.model, 'change', this.render);
+		}
+	});
+	var helpMenuView = new Marionette.CollectionView({
+		tagName: 'ul',
+		className: 'dropdown-menu pull-right',
+		itemView: HelpMenuItemView,
+		collection: helpMenuCollection,
+	});
+	
+    var NavView = Marionette.ItemView.extend({
+        template: _.template(templates.nav),
+        initialize: function() {
+            _.bindAll(this, "applyActive")
+
+            var self = this;
+
+            vent.on("nav:activate", function(id){
+                self.applyActiveFromID(id)
+            });
+
+        },
+        onRender: function(){
+        	this.$('.dropdown').append( helpMenuView.render().el );
+        },
+        ui: {
+            items: 'li'
+        },
+        events: {
+            'click li': 'applyActive',
+            'click #nav-data-manager': 'showDataManager',
+            'click #nav-opFlow': 'showOpFlow',
+            'click #nav-viz': 'showViz',
+            'click #nav-acct': 'showAcct',
+            'click #response': 'fetchData',
+            'click #help': 'updateHelpUrl'
+        },
+        runFlow: function () {
+            vent.trigger('execute:workflow');
+        },
+        fetchData: function () {
+            vent.trigger('data:fetch');
+        },
+
+        applyActive: function(e) {
+            this.ui.items.removeClass('active')
+            $(e.currentTarget).addClass('active');
+        },
+        applyActiveFromID: function(id) {
+            this.ui.items.removeClass('active')
+            this.ui.items.filter('#'+id).addClass('active');
+        },
+        showDataManager: function() {
+            vent.trigger('app:pos:data');
+            vent.trigger('close:workflowList')
+        },
+        showOpFlow: function() {
+            vent.trigger('app:pos:opFlow');
+            vent.trigger('close:workflowList');
+        },
+        showViz: function() {
+            vent.trigger('app:pos:viz');
+            vent.trigger('close:workflowList')
+        },
+        showAcct: function() {
+            vent.trigger("render:workflowList");
+        },
+        updateHelpUrl: function(){
+        	//A shim: this prefills the bug report form with the current workflow id
+        	if(!config.workflow){
+        		return;
+        	}
+        	var dest = helpMenuCollection.get(1).get("dest");
+        	helpMenuCollection.get(1).set("dest", dest + "&entry.1622747629=" + config.workflow.id);
+        }
+    });
+
+    return NavView;
+
+});

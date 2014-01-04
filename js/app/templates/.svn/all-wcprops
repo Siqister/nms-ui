@@ -1,0 +1,59 @@
+K 25
+svn:wc:ra_dav:version-url
+V 71
+/svn/rainbow/!svn/ver/1129/UserInterface/trunk/app/dev/js/app/templates
+END
+dialogStartup.html
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/rainbow/!svn/ver/1129/UserInterface/trunk/app/dev/js/app/templates/dialogStartup.html
+END
+timeReadout.html
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/rainbow/!svn/ver/1125/UserInterface/trunk/app/dev/js/app/templates/timeReadout.html
+END
+nav.html
+K 25
+svn:wc:ra_dav:version-url
+V 80
+/svn/rainbow/!svn/ver/1129/UserInterface/trunk/app/dev/js/app/templates/nav.html
+END
+dataPreviewFrame.html
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/rainbow/!svn/ver/787/UserInterface/trunk/app/dev/js/app/templates/dataPreviewFrame.html
+END
+loader.html
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/rainbow/!svn/ver/483/UserInterface/trunk/app/dev/js/app/templates/loader.html
+END
+confirmationDialog.html
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/rainbow/!svn/ver/483/UserInterface/trunk/app/dev/js/app/templates/confirmationDialog.html
+END
+errorDialog.html
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/rainbow/!svn/ver/483/UserInterface/trunk/app/dev/js/app/templates/errorDialog.html
+END
+progressBar.html
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/rainbow/!svn/ver/1079/UserInterface/trunk/app/dev/js/app/templates/progressBar.html
+END
+dataPreview.html
+K 25
+svn:wc:ra_dav:version-url
+V 88
+/svn/rainbow/!svn/ver/1056/UserInterface/trunk/app/dev/js/app/templates/dataPreview.html
+END

@@ -1,0 +1,10 @@
+define(['jquery', 'underscoreM', 'backbone', 'vent', 'config'], function( $, _, Backbone, vent, config) {
+
+
+    return Backbone.Model.extend({
+    });
+
+
+});
+
+

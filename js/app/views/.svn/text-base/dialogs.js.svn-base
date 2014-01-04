@@ -1,0 +1,92 @@
+// operator list
+define(['underscoreM', 'marionette','templates',  'vent', 'config'], function(_, Marionette, templates, vent, config) {
+
+
+     var dialogs = {}
+
+     dialogs.confirmation = Marionette.ItemView.extend({
+        template: _.template(templates.confirmationDialog),
+        className: 'modal well',
+        templateHelpers: function() {
+            var helpers = {}
+            var self = this;
+            helpers.insertMessage = function() {
+                return self.options.message;
+            }
+            return helpers;
+        },
+        events: {
+            "click .cancel": "cancelAction",
+            "click .confirm": "confirmAction"
+        },
+        cancelAction: function() {
+            vent.trigger('app.close.message')
+        },
+        confirmAction: function() {
+            var self = this;
+
+            if (self.options.commitTrigger) {
+                vent.trigger(self.options.commitTrigger, this.model)
+            }
+            vent.trigger('app.close.message')
+        }
+    })
+
+    dialogs.error = Marionette.ItemView.extend({
+        template: _.template(templates.errorDialog),
+        className: 'modal well',
+        initialize: function() {
+            var self = this;
+                switch(this.options.response.status){
+                    case 404:
+                        self.options.message = config.messages.error404;
+                        break;
+                    case 400:
+                    //case 405:
+                    case 500:
+                    default:
+                        if (self.options.response.err) {
+                            self.options.message = self.options.response.err;
+                        } else {
+                            self.options.message = config.messages.errorGeneric;
+                        }
+                        break;
+                }
+
+        },
+        templateHelpers: function() {
+            var helpers = {}
+            var self = this;
+            helpers.insertMessage = function() {
+                return self.options.message;
+            }
+            return helpers;
+        },
+        events: {
+            "click .confirm": "confirm"
+        },
+        confirm: function() {
+            vent.trigger('app.close.error')
+        }
+    })
+
+    dialogs.startup = Marionette.ItemView.extend({
+        template: _.template(templates.dialogStartup),
+        className: 'modal well',
+        initialize: function() {
+
+        },
+        templateHelpers: function() {
+
+        },
+        events: {
+            "click #get-started": "confirm"
+        },
+        confirm: function() {
+            vent.trigger('app.close.startup')
+        }
+    })
+
+    return dialogs;
+
+});
