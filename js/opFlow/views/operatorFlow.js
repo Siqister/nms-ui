@@ -7,7 +7,9 @@ define([
     //'app/views/dataPreview',
     //'app/views/progressBar',
     'vent',
-    'config'
+    'config',
+    'hammer',
+    'hammer-jquery'
 ], function (
     d3,
     _,
@@ -16,7 +18,8 @@ define([
     //DataPreviewView,
     //ProgressBarView,
     vent,
-    config
+    config,
+    Hammer
 ) {
     var OperatorFlow = {};
 
@@ -39,9 +42,11 @@ define([
             });
         },
         onDomRefresh: function() {
-        	//TODO: enable this
             this.initGraph();
             this.renderFullGraph();
+
+            //enable touch
+            this.$el.hammer();
         },
 
         //does not apply to all d3 events
@@ -50,8 +55,7 @@ define([
             'click #response': 'fetchData',
             'click #datasets': 'showSystemDatasets',
             'click #flow-canvas': 'canvasEvents',
-            'resize': 'graph'
-            //'click [class~=add-operator]': 'showMenu'
+            'resize': 'graph',
             //'click [class~=add-dataset]': 'showSystemDatasets',
         },
 
@@ -62,7 +66,7 @@ define([
             'all': 'workflowModify',
             'sync': 'workflowSync'
         },
-        
+
         //FIXME: workflowModify needs to be used because
         // deletion doesnt fire a proper sync due to the OPTIONS call
         workflowModify: function(t) {
@@ -262,8 +266,6 @@ define([
 
 
             //CREATE NODE GROUPS
-            //console.log(nodes)
-
             var g = this.vis.selectAll("g.data-group")
                     .data(nodes, function (d) {
                         return d.uniqueID;
@@ -274,6 +276,19 @@ define([
                     .call(this.force.drag);
 
             //DRAW NODE GROUPS
+            //First draw the 'trash' and 'preview' buttons for 'dataset' nodes
+            var gEnterDataset = gEnter.filter(function(d,i){
+                return d.type === 'dataset';
+            });
+            var trashOption = gEnterDataset
+                .append("g")
+                .attr("class", "dataset-options-button-group trash");
+            trashOption
+                .append("svg:circle")
+                .attr("class","")
+                .attr("r", 15)
+                .attr("cx", 0)
+                .attr("cy", 0);
 
             gEnter.append("svg:circle")
                     .attr("class", function (d) {
@@ -286,7 +301,6 @@ define([
                     .attr("id", function (d) {
                         return "node-" + d.uniqueID;
                     });
-
             gEnter.append("image")
                     // .attr("class", "icon-large icon-search")
                     .attr("xlink:href", function(d){
@@ -310,7 +324,6 @@ define([
                         if (d.datasetName) return config.getIconByDataset(d.datasetName).height;
                         else return config.getIconByOperation(d.opId).height;
                     });
-
             // node label: types
             gEnter.append("text")
                     .attr("class", function (d) {
@@ -324,7 +337,6 @@ define([
                     .text(function (d) {
                         return ((d.name || d.operatorName || d.datasetName))
                     });
-
             // node label: id
             gEnter.append("text")
                     .attr("class", "node-label-id")
@@ -337,7 +349,6 @@ define([
                         return ("id " + d.uniqueID +"")
                     });
 
-
             g.attr("class", function (d) {
                 var terminal = "";
                 if (d.terminal) {
@@ -346,7 +357,11 @@ define([
                 return "data-group " + d.type + terminal;
             });
 
-            g.exit().remove();
+            //Handling exit gracefully
+            g.exit()
+                .transition()
+                .style('opacity',0)
+                .remove();
 
 
             //ADD OPERATOR BUTTONS BASED ON FINAL CHILDREN, NOT PART OF FORCE LAYOUT
@@ -357,7 +372,6 @@ define([
                 })
                 .append("g")
                 .attr("class", "operator-button-group")
-
             addButtonNodes
                     .append('svg:line')
                     .attr("class", "add-operator-link")
@@ -370,7 +384,6 @@ define([
                     .attr("y1", 0)
                     .attr("x2", this.linkDistance - 17)
                     .attr("y2", 0);
-
             addButtonNodes
                     .append("svg:circle")
                     .attr("class", "add-operator-button")
@@ -384,7 +397,43 @@ define([
                     .attr("x", this.linkDistance - 6)
                     .attr("y", 5)
                     .text("+");
-            
+
+            //Tapping 'dataset' nodes will show and hide .dataset-options-button-group
+            gEnter.each(function(d,i){
+                Hammer(this).on('tap', showDatasetOptions);
+            });
+
+            function showDatasetOptions(e){
+                Hammer(this).off('tap');
+                Hammer(this).on('tap', hideDatasetOptions);
+
+                d3.select(this).selectAll('.trash')
+                    .select('circle')
+                    .transition()
+                    .attr('cy', -self.linkDistance/2);
+            };
+            function hideDatasetOptions(e){
+                Hammer(this).off('tap');
+                Hammer(this).on('tap', showDatasetOptions)
+
+                d3.select(this).select('.trash')
+                    .select('circle')
+                    .transition()
+                    .attr('cy', 0);
+            }
+            trashOption
+                .each(function(d,i){
+                    Hammer(this).on('tap', function(e){
+                        e.stopPropagation();
+
+                        var removalDatasets = self.collection.filter(function(model){
+                            return (model.get("uniqueID")) == d.uniqueID;
+                        });
+
+                        vent.trigger("remove:node", removalDatasets[0]);
+                    })
+                });
+
             this.force.start();
 
             // FORCE LAYOUT BEHAVIOR
@@ -426,16 +475,14 @@ define([
             this.vis.selectAll(".data-group.operator, .data-group.dataset")
                     .on("click", function (d, i) {
 
+                        //reduced collection of NodeItem models that have been clicked
                         var inputDatasets = [];
-
                         inputDatasets = self.collection.filter(function (model) {
                             return (model.get("uniqueID") == d.uniqueID);
                         });
 
                         vent.trigger('app:pos:opFlow');
                         vent.trigger('apply:selection', inputDatasets);
-
-                        //console.log(d3.select(this).select(".add-operator-button"))
 
                         var terminal = "";
 
@@ -449,6 +496,7 @@ define([
                             left: d.x + point[0]
                         }).show();
 
+                        //TODO: why is the menu for terminal nodes treated differently?
                         $("#operator-actions").find("#remove-node").attr("class",'').attr("class", terminal)
 
                         $('#operator-list').css({
@@ -509,6 +557,8 @@ define([
         },
 
         removeNode: function (data) {
+            //event is triggered by the removal of node from the collection
+
             var self = this;
 
             //remove selected node

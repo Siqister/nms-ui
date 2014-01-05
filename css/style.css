@@ -142,6 +142,7 @@ h1{
 #data-manager #flow-canvas svg circle{
 	stroke-width: 2.5px;
 	stroke: #fff;
+    fill: #000;
 }
 #data-manager #flow-canvas svg g.operator-button-group line{
 	stroke: #ffcc00;

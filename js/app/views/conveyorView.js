@@ -30,11 +30,11 @@ define([
 	SPARKS,
 	Hammer
 ){
-	var camera, scene, renderer, composer, vblur, hblur, effectFocus;
+    var camera, scene, renderer, composer, vblur, hblur, effectFocus;
 	var particleCloud, sparksEmitter;
 	var datasetPos = -2000,
 		datasetSpacing = 300;
-	
+
 	var DatasetItemView = Marionette.ItemView.extend({
 		tagName: 'li',
 		className: 'data-set',
@@ -44,7 +44,10 @@ define([
 		template: _.template(templates.datasetItem),
 		events: {
 			'tap.pause': 'pause',
-			'doubletap': 'addDataset'
+			'doubletap': 'addDataset',
+            'dragstart': 'dragStart',
+            'drag': 'onDrag',
+            'dragend': 'dragEnd'
 		},
 		
 		initialize: function(){
@@ -54,9 +57,12 @@ define([
 			//after view has been rendered
 			this.pos = this.calcPos();
 			this.width = this.$el.width();
+            this.marginTop = -1*(this.width/2 + (Math.random() - 0.5)*24);
+            this.height = this.$el.height();
+            this.top = $("#dataset-list").height()/2;
 			this.$el.css({
 				'left': this.pos + 'px',
-				'margin-top': -1*(this.width/2 + (Math.random() - 0.5)*24) + 'px'
+				'margin-top': this.marginTop + 'px'
 			});
 			
 			var datasetName = this.model.get('datasetName');
@@ -97,7 +103,33 @@ define([
 		addDataset: function(e){
 			e.preventDefault();
 			vent.trigger('add:dataset', this.model);
-		}
+		},
+        dragStart: function(e){
+            e.stopPropagation();
+            console.log('dragstart');
+            cancelAnimationFrame(this.animation);
+        },
+        onDrag: function(e){
+            e.preventDefault();
+
+            var pos = {};
+            pos.x = e.gesture.touches[0].pageX;
+            pos.y = e.gesture.touches[0].pageY;
+
+            var left = pos.x - this.width/ 2,
+                marginTop = (pos.y - this.top) + this.marginTop;
+            this.pos = left;
+
+            this.$el.css({
+               'left': this.pos + 'px',
+                'margin-top': marginTop + 'px'
+            });
+        },
+        dragEnd: function(e){
+            e.stopPropagation();
+            console.log('dragend');
+            this.animation = requestAnimationFrame( this.updatePos );
+        }
 		
 	});
 	

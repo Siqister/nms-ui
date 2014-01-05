@@ -51,7 +51,7 @@ require.config({
         'Three-TBlurShader': 'app/libs/Three/shaders/TriangleBlurShader',
         'Three-VBlurShader': 'app/libs/Three/shaders/VerticalBlurShader',
         
-        'hammer': 'app/libs/hammer/hammer',
+        'hammer': 'app/libs/hammer/hammer', //AMD compatible
         'hammer-jquery': 'app/libs/hammer/jquery.hammer', //AMD compatible
         'hammer-showtouches': 'app/libs/hammer/hammer.showtouches', //non-AMD
         'caress': 'app/libs/caress/caress-0.1.0', //prerequisite for TUIO input
@@ -78,6 +78,10 @@ require.config({
         'Sparks' : {
         	deps: ['Three','Tween'],
         	exports: 'SPARKS'
+        },
+        'hammer-showtouches' : {
+            deps: ['hammer', 'hammer-jquery'],
+            exports: 'Hammer.plugins.showTouches'
         },
         'Three-EffectComposer': ['Three'],
         'Three-RenderPass': ['Three'],
@@ -120,6 +124,7 @@ require([
 		'caress',
 		'socket.io',
 		'hammer-jquery',
+        'hammer-showtouches'
     ], function(
     	App,
     	opFlowController,
@@ -128,8 +133,10 @@ require([
     	io
     ){
 	console.log('Hello world');
-	
-	
+
+    //TODO: for development, to be removed
+    Hammer.plugins.showTouches();
+
 	//TODO: remove this in the final release
 	window.client = new Caress.Client({
 		host: 'localhost',

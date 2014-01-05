@@ -101,6 +101,7 @@ function(
 				vent.trigger('conveyor:add:datasets');
 
 				OperatorFlowView.renderFlowItems(config.workflow);
+                //TODO: OperatorListView is now obselete
 				//OperatorListView.showOperatorItems(config.systemOperators);
             });
         });
