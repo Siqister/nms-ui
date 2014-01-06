@@ -80,18 +80,15 @@ h1{
 	float: left;
 	position: absolute;
 	left: -2000px;
-	top: 50%;
-	margin-top: -24px;
-	transition: margin 1s;
-	-webkit-transition: margin 1s;
-	-moz-transition: margin 1s;
 	background: url('../assets/icon_dataset_background.png') no-repeat center;
 	background-size: 100% auto;
 }
 #conveyor #dataset-list li.paused{
 	width: 56px;
 	height: 56px;
-	margin:top: -28px;
+}
+#conveyor #dataset-list li.dragged a{
+    opacity: 0.5;
 }
 #conveyor #dataset-list li a{
 	width: 100%;
@@ -133,7 +130,10 @@ h1{
 }
 /* Background and appearance */
 #data-manager{
-	background: -webkit-linear-gradient(35deg, rgba(0,0,0,1), rgba(102,255,226,0.15));
+	background: -webkit-linear-gradient(35deg, rgba(0,0,0,0.5), rgba(102,255,226,0.15));
+}
+#data-manager.armed{
+    background: -webkit-linear-gradient(35deg, rgba(0,0,0,0.5), rgba(255,204,0,0.2));
 }
 /* Operation flow visualization */
 #data-manager #flow-canvas svg text{

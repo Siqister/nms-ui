@@ -73,7 +73,7 @@ require.config({
         	exports: 'THREE'
         },
         'Tween' : {
-        	exports: 'Tween'
+        	exports: 'TWEEN'
         },
         'Sparks' : {
         	deps: ['Three','Tween'],

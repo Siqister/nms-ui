@@ -6,6 +6,7 @@ define([
 	'templates',
 	'Three',
 	'Sparks',
+    'Tween',
 	'hammer',
 	'hammer-jquery',
 	'Three-EffectComposer',
@@ -28,6 +29,7 @@ define([
 	templates,
 	THREE,
 	SPARKS,
+    TWEEN,
 	Hammer
 ){
     var camera, scene, renderer, composer, vblur, hblur, effectFocus;
@@ -57,12 +59,13 @@ define([
 			//after view has been rendered
 			this.pos = this.calcPos();
 			this.width = this.$el.width();
-            this.marginTop = -1*(this.width/2 + (Math.random() - 0.5)*24);
             this.height = this.$el.height();
-            this.top = $("#dataset-list").height()/2;
+            this.vBound = $("#dataset-list").height();
+            this.top = this.prevTop = this.vBound/2 - this.height/2;
+
 			this.$el.css({
 				'left': this.pos + 'px',
-				'margin-top': this.marginTop + 'px'
+				'top': this.top + 'px'
 			});
 			
 			var datasetName = this.model.get('datasetName');
@@ -83,7 +86,14 @@ define([
 		updatePos: function(){
 			var self = this;		
 			self.pos > 2000? self.pos = -self.width : self.pos += self.speed;
-			self.$el.css({'left':this.pos + 'px'});
+
+            self.vSpeed = (this.top - this.prevTop)/10;
+			self.top -= self.vSpeed
+
+            self.$el.css({
+                'left' :this.pos + 'px',
+                'top': this.top + 'px'
+            });
 			this.animation = requestAnimationFrame( this.updatePos );
 		},
 		pause: function(e){
@@ -106,8 +116,12 @@ define([
 		},
         dragStart: function(e){
             e.stopPropagation();
-            console.log('dragstart');
             cancelAnimationFrame(this.animation);
+            this.$el.addClass("dragged");
+
+            //keep track of original positions
+            this.prevPos = this.pos;
+            this.prevTop = this.top;
         },
         onDrag: function(e){
             e.preventDefault();
@@ -116,21 +130,38 @@ define([
             pos.x = e.gesture.touches[0].pageX;
             pos.y = e.gesture.touches[0].pageY;
 
-            var left = pos.x - this.width/ 2,
-                marginTop = (pos.y - this.top) + this.marginTop;
-            this.pos = left;
+            this.pos = pos.x - this.width/ 2;
+            this.top = pos.y - this.height/2;
 
             this.$el.css({
                'left': this.pos + 'px',
-                'margin-top': marginTop + 'px'
+                'top': this.top + 'px'
             });
+
+            //if the dataset is dragged outside of the conveyor
+            if(pos.y > this.vBound){
+                this.armed = true;
+                vent.trigger('arm:dataset');
+            }else{
+                this.armed = false;
+                vent.trigger('disarm:dataset');
+            }
         },
         dragEnd: function(e){
+            var self = this;
+
             e.stopPropagation();
-            console.log('dragend');
             this.animation = requestAnimationFrame( this.updatePos );
+            this.$el.removeClass("dragged");
+
+            vent.trigger('disarm:dataset');
+            //if dataset is armed, add the dataset
+            //and return the dataset icon to original position
+            if(this.armed){
+                vent.trigger('add:dataset', this.model);
+            }
         }
-		
+
 	});
 	
 	var ConveyorView = Marionette.CompositeView.extend({

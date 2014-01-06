@@ -71,6 +71,13 @@ function(
     	//triggered by operatorFlowView after the view has been created
     	Controller.layout.operatorFlow.show(operatorFlowView);
     });
+
+    vent.on('arm:dataset', function(){
+        $("#data-manager").addClass("armed");
+    });
+    vent.on('disarm:dataset', function(){
+        $("#data-manager").removeClass("armed");
+    })
     
 
     //public api for routers etc    
