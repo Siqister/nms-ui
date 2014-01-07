@@ -173,7 +173,7 @@ define([
 		onShow: function(){
 			//CSS applied at this point
 			//initialize webGL environment
-			//init(this.$('#webgl'));
+			init(this.$('#webgl'));
 		},
 	});
 	

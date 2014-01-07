@@ -35,7 +35,7 @@
       <file leaf-file-name="require.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/require.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="30315">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="30375">
               <folding />
             </state>
           </provider>
@@ -44,7 +44,7 @@
       <file leaf-file-name="main.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/main.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="75" column="27" selection-start="3764" selection-end="3764" vertical-scroll-proportion="0.0" vertical-offset="645" max-vertical-offset="2385">
+            <state line="75" column="27" selection-start="3764" selection-end="3764" vertical-scroll-proportion="0.0" vertical-offset="1125" max-vertical-offset="2385">
               <folding />
             </state>
           </provider>
@@ -53,25 +53,25 @@
       <file leaf-file-name="app.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/app/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="29" column="9" selection-start="418" selection-end="421" vertical-scroll-proportion="-8.538462" vertical-offset="213" max-vertical-offset="1740">
+            <state line="29" column="9" selection-start="418" selection-end="421" vertical-scroll-proportion="0.0" vertical-offset="435" max-vertical-offset="1740">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="conveyorView.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="conveyorView.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/app/views/conveyorView.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="119" column="41" selection-start="2876" selection-end="2876" vertical-scroll-proportion="0.0" vertical-offset="1612" max-vertical-offset="4950">
+            <state line="169" column="8" selection-start="4335" selection-end="4335" vertical-scroll-proportion="0.2867647" vertical-offset="2340" max-vertical-offset="4950">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="style.css" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="style.css" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="126" column="49" selection-start="2061" selection-end="2061" vertical-scroll-proportion="0.43069306" vertical-offset="1629" max-vertical-offset="2340">
+            <state line="126" column="49" selection-start="2061" selection-end="2061" vertical-scroll-proportion="0.0" vertical-offset="1629" max-vertical-offset="2340">
               <folding />
             </state>
           </provider>
@@ -96,14 +96,14 @@
         <option value="$PROJECT_DIR$/js/main.js" />
         <option value="$PROJECT_DIR$/js/opFlow/views/operatorFlow.js" />
         <option value="$PROJECT_DIR$/js/opFlow/opFlowController.js" />
-        <option value="$PROJECT_DIR$/js/app/views/conveyorView.js" />
         <option value="$PROJECT_DIR$/css/style.css" />
+        <option value="$PROJECT_DIR$/js/app/views/conveyorView.js" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1302" />
-    <option name="y" value="22" />
+    <option name="x" value="138" />
+    <option name="y" value="202" />
     <option name="width" value="1265" />
     <option name="height" value="790" />
   </component>
@@ -270,14 +270,6 @@
     <property name="SearchEverywhereHistory" value="" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
-      <option name="VMOptions" />
-      <option name="arguments" />
-      <option name="filePath" />
-      <option name="scope" value="ALL" />
-      <option name="testName" />
-      <method />
-    </configuration>
     <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
       <option name="VMOptions" />
       <option name="arguments" />
@@ -288,15 +280,23 @@
       <option name="showConsoleOnStdOut" value="false" />
       <method />
     </configuration>
+    <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
+      <option name="VMOptions" />
+      <option name="arguments" />
+      <option name="filePath" />
+      <option name="scope" value="ALL" />
+      <option name="testName" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" singleton="true" config-file="">
+      <envs />
+      <method />
+    </configuration>
     <configuration default="true" type="JSTestDriver:ConfigurationType" factoryName="JsTestDriver">
       <setting name="configLocationType" value="CONFIG_FILE" />
       <setting name="settingsFile" value="" />
       <setting name="serverType" value="INTERNAL" />
       <setting name="preferredDebugBrowser" value="CHROME" />
-      <method />
-    </configuration>
-    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" singleton="true" config-file="">
-      <envs />
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
@@ -335,13 +335,12 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1302" y="22" width="1265" height="790" extended-state="0" />
+    <frame x="138" y="202" width="1265" height="790" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.120665744" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27667984" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -352,9 +351,10 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.120665744" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -374,6 +374,48 @@
     <breakpoint-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/js/opFlow/opFlowController.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="78" column="33" selection-start="1890" selection-end="1890" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1935">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/require.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="30375">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/main.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="75" column="27" selection-start="3764" selection-end="3764" vertical-scroll-proportion="0.0" vertical-offset="1125" max-vertical-offset="2385">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/app/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="29" column="9" selection-start="418" selection-end="421" vertical-scroll-proportion="0.0" vertical-offset="435" max-vertical-offset="1740">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/app/views/conveyorView.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="119" column="41" selection-start="2876" selection-end="2876" vertical-scroll-proportion="0.0" vertical-offset="1785" max-vertical-offset="4950">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="126" column="49" selection-start="2061" selection-end="2061" vertical-scroll-proportion="0.0" vertical-offset="1629" max-vertical-offset="2340">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/js/opFlow/opFlowController.js">
       <provider selected="true" editor-type-id="text-editor">
         <state line="116" column="3" selection-start="3133" selection-end="3133" vertical-scroll-proportion="0.0" vertical-offset="1122" max-vertical-offset="1830">
@@ -565,7 +607,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/app/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="29" column="9" selection-start="418" selection-end="421" vertical-scroll-proportion="-8.538462" vertical-offset="213" max-vertical-offset="1740">
+        <state line="29" column="9" selection-start="418" selection-end="421" vertical-scroll-proportion="0.0" vertical-offset="435" max-vertical-offset="1740">
           <folding />
         </state>
       </provider>
@@ -591,16 +633,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/app/views/conveyorView.js">
+    <entry file="file://$PROJECT_DIR$/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="119" column="41" selection-start="2876" selection-end="2876" vertical-scroll-proportion="0.0" vertical-offset="1612" max-vertical-offset="4950">
+        <state line="126" column="49" selection-start="2061" selection-end="2061" vertical-scroll-proportion="0.0" vertical-offset="1629" max-vertical-offset="2340">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/css/style.css">
+    <entry file="file://$PROJECT_DIR$/js/app/views/conveyorView.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="126" column="49" selection-start="2061" selection-end="2061" vertical-scroll-proportion="0.43069306" vertical-offset="1629" max-vertical-offset="2340">
+        <state line="169" column="8" selection-start="4335" selection-end="4335" vertical-scroll-proportion="0.2867647" vertical-offset="2340" max-vertical-offset="4950">
           <folding />
         </state>
       </provider>
